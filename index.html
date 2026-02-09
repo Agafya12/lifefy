@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lifefy</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #eee;
+    text-align: center;
+    padding: 20px;
+  }
+  .card {
+    background: #1e1e1e;
+    padding: 20px;
+    margin: 15px auto;
+    border-radius: 12px;
+    max-width: 420px;
+    box-shadow: 0 0 10px #000;
+  }
+  .stat { font-size: 18px; margin: 6px 0; }
+  button {
+    margin: 6px;
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #2e7d32;
+    color: white;
+  }
+  button:hover { opacity: 0.85; }
+  .reset-btn { background: #8b0000; }
+  .levelup {
+    color: gold;
+    font-weight: bold;
+    margin-top: 10px;
+    min-height: 24px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Lifefy</h1>
+<p>Stats vettu</p>
+
+<div class="card">
+  <div class="stat">💪 STR: <span id="strXP">0</span> XP</div>
+  <div class="stat">🧠 INT: <span id="intXP">0</span> XP</div>
+  <div class="stat">❤️ END: <span id="endXP">0</span> XP</div>
+  <div class="stat">🎭 CHA: <span id="chaXP">0</span> XP</div>
+  <div class="stat">🧘 WIS: <span id="wisXP">0</span> XP</div>
+</div>
+
+<div class="card">
+  <button onclick="gainXP('str', 1)">Tränat</button>
+  <button onclick="gainXP('int', 1)">Pluggat</button>
+  <button onclick="gainXP('end', 1)">Sovit bra</button>
+  <button onclick="gainXP('end', 1)">Ätit bra</button>
+  <button onclick="gainXP('cha', 1)">Haft kul</button>
+  <button onclick="gainXP('wis', 1)">Mediterat</button>
+  <br>
+  <button class="reset-btn" onclick="resetStats()">Reset All XP</button>
+  <div id="message" class="levelup"></div>
+</div>
+
+<script>
+  let stats = {
+    str: parseInt(localStorage.getItem("strXP")) || 0,
+    int: parseInt(localStorage.getItem("intXP")) || 0,
+    end: parseInt(localStorage.getItem("endXP")) || 0,
+    cha: parseInt(localStorage.getItem("chaXP")) || 0,
+    wis: parseInt(localStorage.getItem("wisXP")) || 0
+  };
+
+  function updateUI() {
+    document.getElementById("strXP").textContent = stats.str;
+    document.getElementById("intXP").textContent = stats.int;
+    document.getElementById("endXP").textContent = stats.end;
+    document.getElementById("chaXP").textContent = stats.cha;
+    document.getElementById("wisXP").textContent = stats.wis;
+  }
+
+  function gainXP(stat, amount) {
+    stats[stat] += amount;
+
+    let message = "";
+    if (stats[stat] >= 100) {
+      stats[stat] -= 100;
+      message = "LEVEL UP i " + stat.toUpperCase() + "! 🎉";
+    }
+
+    localStorage.setItem(stat + "XP", stats[stat]);
+    document.getElementById("message").textContent = message;
+    updateUI();
+  }
+
+  function resetStats() {
+    if (confirm("Är du säker på att du vill nollställa alla XP?")) {
+      for (let key in stats) {
+        stats[key] = 0;
+        localStorage.setItem(key + "XP", 0);
+      }
+      document.getElementById("message").textContent = "Alla stats återställda.";
+      updateUI();
+    }
+  }
+
+  updateUI();
+</script>
+
+</body>
+</html>
